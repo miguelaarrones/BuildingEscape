@@ -36,13 +36,9 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// Get players viewpoint
 	FVector PlayerViewPointLocation;
 	FRotator PlayerViewPointRotation;
-
 	GetWorld()->GetFirstPlayerController()->GetPlayerViewPoint(OUT PlayerViewPointLocation, OUT PlayerViewPointRotation);
 
-	//UE_LOG(LogTemp, Warning, TEXT("Location: %s, Rotation: %s"), *PlayerViewPointLocation.ToString(), *PlayerViewPointRotation.ToString());
-
 	// Draw a Line from player showing the REACH
-
 	FVector LineTraceEnd = PlayerViewPointLocation + PlayerViewPointRotation.Vector() * Reach;
 	DrawDebugLine(
 		GetWorld(),
@@ -56,6 +52,25 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	);
 
 	// Ray-cast out to a certain distance (Reach)
+	FHitResult Hit;
+	FCollisionQueryParams TraceParams(
+		FName(TEXT("")),
+		false,
+		GetOwner()
+	);
+	GetWorld()->LineTraceSingleByObjectType(
+		OUT Hit, 
+		PlayerViewPointLocation,
+		LineTraceEnd, 
+		// Collision Object Type
+		FCollisionObjectQueryParams(ECollisionChannel::ECC_PhysicsBody),
+		TraceParams
+	);
+
+	AActor* ActorHit = Hit.GetActor();
+	if (ActorHit) {
+		UE_LOG(LogTemp, Error, TEXT("%s"), *(ActorHit->GetName()));
+	}
 	
 	// See what it hits
 }
