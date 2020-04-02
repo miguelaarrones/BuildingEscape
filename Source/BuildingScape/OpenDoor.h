@@ -31,7 +31,7 @@ private:
 	float CurrentYaw;
 
 	UPROPERTY(EditAnywhere)
-	float TargetYaw = 90.f;
+	float OpenAngle = 90.f;
 
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
@@ -39,6 +39,14 @@ private:
 	UPROPERTY(EditAnywhere)
 	AActor* ActorThatOpens;
 
+	UPROPERTY(EditAnywhere)
+	float DoorOpenSpeed = 45.f;
+
+	UPROPERTY(EditAnywhere)
+	float DoorCloseSpeed = 135.f;
+
 	float DoorLastOpen = 0.f;
+
+	UPROPERTY(EditAnywhere)
 	float DoorCloseDelay = 0.1f;
 };
