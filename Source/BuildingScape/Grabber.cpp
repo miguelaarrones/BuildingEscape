@@ -8,29 +8,40 @@
 #define OUT
 
 // Sets default values for this component's properties
-UGrabber::UGrabber()
-{
+UGrabber::UGrabber() {
 	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
-
-	// ...
 }
 
 
 // Called when the game starts
-void UGrabber::BeginPlay()
-{
+void UGrabber::BeginPlay() {
 	Super::BeginPlay();
-
-	UE_LOG(LogTemp, Warning, TEXT("Yes, I'm Grabber, I'm working"));
 	
+	PhysicsHandle = GetOwner()->FindComponentByClass<UPhysicsHandleComponent>();
+
+	if (PhysicsHandle) {
+	} else {
+		UE_LOG(LogTemp, Error, TEXT("UPhysicsHandleComponent not found in %s"), *GetOwner()->GetName());
+	}
+
+	InputComponent = GetOwner()->FindComponentByClass<UInputComponent>();
+	if (InputComponent) {
+		UE_LOG(LogTemp, Warning, TEXT("InputController found on %s"), *GetOwner()->GetName());
+		InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+	} else {
+		UE_LOG(LogTemp, Error, TEXT("InputController not found in %s"), *GetOwner()->GetName());
+	}
+}
+
+void UGrabber::Grab() {
+	UE_LOG(LogTemp, Warning, TEXT("Grabber pressed"));
 }
 
 
 // Called every frame
-void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
+void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Get players viewpoint
@@ -69,9 +80,10 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	AActor* ActorHit = Hit.GetActor();
 	if (ActorHit) {
-		UE_LOG(LogTemp, Error, TEXT("%s"), *(ActorHit->GetName()));
+		UE_LOG(LogTemp, Warning, TEXT("Line trace has hit: %s"), *ActorHit->GetName());
 	}
 	
 	// See what it hits
 }
+
 
